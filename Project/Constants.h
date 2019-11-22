@@ -1,0 +1,1 @@
+extern const unsigned int ChunkSize = 50000;

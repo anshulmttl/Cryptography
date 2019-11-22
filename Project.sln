@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project", "Project\Project.vcxproj", "{FB031B38-9EC7-4917-976E-FDE142DD7AF3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KeyGen", "KeyGen\KeyGen.vcxproj", "{F0F2A0F6-02FF-4D63-B9F9-D259273E4ECA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImplementLibcurl", "ImplementLibcurl\ImplementLibcurl.vcxproj", "{ECD8C48D-730B-468F-B0C7-725C8A737728}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB031B38-9EC7-4917-976E-FDE142DD7AF3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FB031B38-9EC7-4917-976E-FDE142DD7AF3}.Debug|Win32.Build.0 = Debug|Win32
+		{FB031B38-9EC7-4917-976E-FDE142DD7AF3}.Release|Win32.ActiveCfg = Release|Win32
+		{FB031B38-9EC7-4917-976E-FDE142DD7AF3}.Release|Win32.Build.0 = Release|Win32
+		{F0F2A0F6-02FF-4D63-B9F9-D259273E4ECA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F0F2A0F6-02FF-4D63-B9F9-D259273E4ECA}.Debug|Win32.Build.0 = Debug|Win32
+		{F0F2A0F6-02FF-4D63-B9F9-D259273E4ECA}.Release|Win32.ActiveCfg = Release|Win32
+		{F0F2A0F6-02FF-4D63-B9F9-D259273E4ECA}.Release|Win32.Build.0 = Release|Win32
+		{ECD8C48D-730B-468F-B0C7-725C8A737728}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ECD8C48D-730B-468F-B0C7-725C8A737728}.Debug|Win32.Build.0 = Debug|Win32
+		{ECD8C48D-730B-468F-B0C7-725C8A737728}.Release|Win32.ActiveCfg = Release|Win32
+		{ECD8C48D-730B-468F-B0C7-725C8A737728}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
