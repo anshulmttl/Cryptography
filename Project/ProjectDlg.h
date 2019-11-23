@@ -27,6 +27,7 @@ public:
 protected:
 	HICON m_hIcon;
 
+	
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
@@ -39,4 +40,5 @@ public:
 	afx_msg void OnBnClickedPlayEncryptedVideo();
 	afx_msg void OnBnClickedPlay();
 	void DecryptionIsCompleted();
+
 };

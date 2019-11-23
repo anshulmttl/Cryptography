@@ -11,6 +11,13 @@
 #include <string>
 #include "EncryptData.h"
 #include <fstream>
+#include <intrin.h>
+#include <sstream>
+#include <comdef.h>
+#include <WbemIdl.h>
+
+#define _WIN32_DCOM
+#pragma comment(lib, "wbemuuid.lib")
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -96,7 +103,137 @@ HCURSOR CImplementLibcurlDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+_bstr_t CImplementLibcurlDlg::GetBiosSerial(WmiInfo wmiInfo)
+{
+	HRESULT hRes;
+	hRes = CoInitializeEx(0, COINIT_MULTITHREADED);
 
+	if(FAILED(hRes))
+	{
+		// return false
+	}
+
+	hRes = CoInitializeSecurity(NULL,
+		-1,
+		NULL,
+		NULL,
+		RPC_C_AUTHN_LEVEL_DEFAULT,
+		RPC_C_IMP_LEVEL_IMPERSONATE,
+		NULL,
+		EOAC_NONE,
+		NULL);
+
+	if(FAILED(hRes))
+	{
+	}
+
+	IWbemLocator *pLoc = NULL;
+	hRes = CoCreateInstance(CLSID_WbemLocator,
+		0,
+		CLSCTX_INPROC_SERVER,
+		IID_IWbemLocator,
+		(LPVOID *) &pLoc);
+
+	if(FAILED(hRes))
+	{
+	}
+
+	IWbemServices *pSvc = NULL;
+	hRes = pLoc->ConnectServer(_bstr_t(L"ROOT\\CIMV2"),
+		NULL,
+		NULL,
+		0,
+		NULL,
+		0,
+		0,
+		&pSvc);
+
+	if(FAILED(hRes))
+	{
+	}
+
+	hRes = CoSetProxyBlanket(pSvc,
+		RPC_C_AUTHN_WINNT,
+		RPC_C_AUTHZ_NONE,
+		NULL,
+		RPC_C_AUTHN_LEVEL_CALL,
+		RPC_C_IMP_LEVEL_IMPERSONATE,
+		NULL,
+		EOAC_NONE);
+
+	if(FAILED(hRes))
+	{
+		pSvc->Release();
+		pLoc->Release();
+		CoUninitialize();
+	}
+	_bstr_t returnValue("");
+	if(wmiInfo == IDD_BIOS_SERIAL)
+	{
+		IEnumWbemClassObject *pEnumerator = NULL;
+		hRes = pSvc->ExecQuery(bstr_t("WQL"),
+			bstr_t("SELECT * FROM Win32_Bios"),
+			WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
+			NULL,
+			&pEnumerator);
+
+		if(FAILED(hRes))
+		{
+		}
+
+		IWbemClassObject *pclsObj = NULL;
+		ULONG uReturn = 0;
+	
+		while(pEnumerator)
+		{
+			HRESULT hr = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+
+			if(0 == uReturn)
+			{
+				break;
+			}
+
+			VARIANT vtProp;
+			hr = pclsObj->Get(L"SerialNumber", 0, &vtProp, 0, 0);
+			returnValue = vtProp.bstrVal;
+			VariantClear(&vtProp);
+			pclsObj->Release();
+		}
+	}
+	else if(wmiInfo == IDD_BOARD_SERIAL)
+	{
+		IEnumWbemClassObject *pEnumerator = NULL;
+		hRes = pSvc->ExecQuery(bstr_t("WQL"),
+			bstr_t("SELECT * FROM Win32_BaseBoard"),
+			WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
+			NULL,
+			&pEnumerator);
+
+		if(FAILED(hRes))
+		{
+		}
+
+		IWbemClassObject *pclsObj = NULL;
+		ULONG uReturn = 0;
+	
+		while(pEnumerator)
+		{
+			HRESULT hr = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+
+			if(0 == uReturn)
+			{
+				break;
+			}
+
+			VARIANT vtProp;
+			hr = pclsObj->Get(L"Name", 0, &vtProp, 0, 0); //"Product" gives baseboard serial
+			returnValue = vtProp.bstrVal;
+			VariantClear(&vtProp);
+			pclsObj->Release();
+		}
+	}
+	return returnValue;
+}
 
 void CImplementLibcurlDlg::OnBnClickedButton1()
 {
@@ -119,13 +256,40 @@ void CImplementLibcurlDlg::OnBnClickedButton1()
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist1);
 
 		// Get system name
-		//TCHAR szBuffer[256];
-		//DWORD dwSize = 256;
-		//GetComputerName(szBuffer, &dwSize);
-		//std::wstring w_compname(szBuffer);
-		//std::string compName(w_compname.begin(),w_compname.end());
+		TCHAR szBuffer[256];
+		DWORD dwSize = 256;
+		GetComputerName(szBuffer, &dwSize);
+		std::wstring w_compname(szBuffer);
+		std::string compName(w_compname.begin(),w_compname.end());
 		//ReqPara = ReqPara + compName + "\",\"MOTHER_BOARD\":\"dfsdf145454545\",\"PROCESSOR_ID\":\"adsad65656565\",\"BIOS_ID\":\"11454dfsdfsfd\",\"SYS_DATE\":\"2019-09-18 14:21:01.663\",\"VERSION\":\"18\"}";
-		std::string ReqPara = "{\"KEY_CODE\":\"70E1-917B-F0D0-C07B\",\"PRODUCT_CODE\":\"47CAE3A192\",\"SYSTEM_NAME\":\"ABC-PC\",\"MOTHER_BOARD\":\"dfsdf145454545\",\"PROCESSOR_ID\":\"adsad65656565\",\"BIOS_ID\":\"11454dfsdfsfd\",\"SYS_DATE\":\"2019-09-18 14:21:01.663\",\"VERSION\":\"18\"}";
+		
+		//CPUID 
+		int CPUInfo[4] = {-1};
+		__cpuid(CPUInfo, 0);
+		std::stringstream cpuid;
+		for(int i = 0; i < 4; ++i)
+		{
+			cpuid << CPUInfo[i];
+		}
+
+		// Motherboard
+		_bstr_t motherBoard = GetBiosSerial(IDD_BOARD_SERIAL);
+		std::string motherBoard_str((char *)motherBoard);
+
+		// BIOS
+		_bstr_t biosId = GetBiosSerial(IDD_BIOS_SERIAL);
+		std::string biosId_str((char *)biosId);
+
+		std::string ReqPara = "{\"KEY_CODE\":\"70E1-917B-F0D0-C07B\",\"PRODUCT_CODE\":\"47CAE3A192\",\"SYSTEM_NAME\":\"";
+		ReqPara += compName;
+		ReqPara += "\",\"MOTHER_BOARD\":\"";
+		ReqPara += motherBoard_str;
+		ReqPara += "\",\"PROCESSOR_ID\":\"";
+		ReqPara += cpuid.str();
+		ReqPara += "\",\"BIOS_ID\":\"";
+		ReqPara += biosId_str;
+		ReqPara += "\",\"SYS_DATE\":\"2019-09-18 14:21:01.663\",\"VERSION\":\"18\"}";
+		
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, ReqPara.c_str());
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, ReqPara.length());
         curl_easy_setopt(curl, CURLOPT_POST, 1);

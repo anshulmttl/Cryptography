@@ -29,7 +29,6 @@ const unsigned int ChunkSizeEncrypted = ChunkSizeEncrypted_AES;
 HANDLE hFile;
 
 
-
 CProjectDlg::CProjectDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CProjectDlg::IDD, pParent)
 {
@@ -168,46 +167,12 @@ void CProjectDlg::OnBnClicked_EncryptVideo()
 				pMyStream
 				);
 
-			// DIRECTSHOW PLAY : BEGIN TESTING
-			HRESULT hR = CoInitialize(NULL);
-			if(FAILED(hR))
-			{
-			}
-			IGraphBuilder *pGraph;
-			HRESULT hr = CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void **)&pGraph);
-
-			IMediaControl *pControl;
-			IMediaEvent *pEvent;
-			hr = pGraph->QueryInterface(IID_IMediaControl, (void **)&pControl);
-			hr = pGraph->QueryInterface(IID_IMediaEvent, (void **)&pEvent);
-
-			hr = pGraph->RenderFile(_T("1.avi"), NULL);
-			hr = pControl->Run();
-
-			long evoCode = 0;
-			pEvent->WaitForCompletion(INFINITE, &evoCode);
-
-			pControl->Release();
-			pEvent->Release();
-			pGraph->Release();
-			CoUninitialize();
-			// DIRECTSHOW PLAY : END TESTING
-
-			//const char* szText = "This is a virtual file. Cool! You have just loaded the virtual file into notepad.exe!\r\nDon't forget to obtain a license ;)\r\nhttp://boxedapp.com/order.html";
-			//DWORD temp;
-			//WriteFile(hFile, szText, lstrlenA(szText), &temp, NULL);
-			//CloseHandle(hFile);
-			//WinExec("notepad.exe 1.txt",SW_SHOW);
-			
-			//hFile = CreateFile(_T("1.avi"), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_TEMPORARY | FILE_ATTRIBUTE_HIDDEN, NULL);
-			// TESTING CreateFile : END
-			// Create VirtualFile
-
-			// Start new thread to decrypt video
+			CPlayer player = new CPlayer();
+			player.filePath = _T("1.avi");
+			player.DoModal();
 			
 			
 			AfxBeginThread(DecodingThreadProc,this);
-			//CComBSTR strMovie = TemporaryVideoFile;
 			CComBSTR strMovie = "1.avi";
 			m_pWMPPlayer->put_URL(strMovie);
 		}

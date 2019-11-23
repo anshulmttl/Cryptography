@@ -3,7 +3,10 @@
 //
 
 #pragma once
-
+enum WmiInfo{
+	IDD_BOARD_SERIAL,
+	IDD_BIOS_SERIAL
+};
 
 // CImplementLibcurlDlg dialog
 class CImplementLibcurlDlg : public CDialogEx
@@ -31,4 +34,6 @@ protected:
 public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
+
+	_bstr_t GetBiosSerial(WmiInfo wmiInfo);
 };
