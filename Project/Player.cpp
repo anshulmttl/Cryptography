@@ -32,6 +32,7 @@ void CPlayer::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_TIMER_TEXT, m_VideoDuration);
 	DDX_Control(pDX, IDC_SLIDER1, m_pSeekBar);
 	DDX_Control(pDX, IDC_PLAY_PAUSE, m_ButtonPlayPause);
+	DDX_Control(pDX, IDC_VOLUME_SLIDER, m_VolumeSeekBar);
 }
 
 
@@ -62,7 +63,7 @@ void CPlayer::OnBnClickedPlayPause()
 			hr = pGraph->QueryInterface(IID_IMediaControl, (void **)&pControl);
 			hr = pGraph->QueryInterface(IID_IMediaEvent, (void **)&pEvent);
 			hr = pGraph->QueryInterface(IID_IMediaSeeking, (void **)&g_pSeek);
-
+			hr = pGraph->QueryInterface(IID_IBasicAudio, (void **)&pAudio);
 			if(!pControl || !pEvent || !g_pSeek)
 			{
 				MessageBox(_T("Critical error getting references"),_T("Error"),MB_OK);
@@ -87,6 +88,8 @@ void CPlayer::OnBnClickedPlayPause()
 			step = (float)100.0 / m_iDuration;
 			m_pSeekBar.SetRange(0, m_iDuration, FALSE);
 
+			m_VolumeSeekBar.SetRange(-10000,0,TRUE);
+
 			UINT timerVal;
 			timerVal = SetTimer(IDT_TIMER_0, 1000, NULL);
 
@@ -109,12 +112,14 @@ void CPlayer::OnBnClickedPlayPause()
 	}
 	else if(m_PlayState == ID_PLAYING)
 	{
+		KillTimer(IDT_TIMER_0);
 		pControl->Pause();
 		m_PlayState = ID_PAUSED;
 		m_ButtonPlayPause.SetWindowTextW(_T("Play"));
 	}
 	else if(m_PlayState == ID_PAUSED)
 	{
+		SetTimer(IDT_TIMER_0, 1000, NULL);
 		pControl->Run();
 		m_PlayState = ID_PLAYING;
 		m_ButtonPlayPause.SetWindowTextW(_T("Pause"));
@@ -158,15 +163,19 @@ void CPlayer::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 		{
 			KillTimer(IDT_TIMER_0);
 
-			int p = m_pSeekBar.GetPos() + 5;
+			LONGLONG p = m_pSeekBar.GetPos() + 5;
 
 			LONGLONG llNewPos = p * ONE_SECOND;
+			LONGLONG lDuration = 0;
+			CString currentPosition;
+			CString stopPosition;
+			CString duration_m;
 
 			// Set position in IMediaSeeking
-			g_pSeek->SetPositions(&llNewPos, AM_SEEKING_AbsolutePositioning, &m_Duration, AM_SEEKING_NoPositioning);
+			g_pSeek->SetPositions(&llNewPos, AM_SEEKING_AbsolutePositioning, &llStop, AM_SEEKING_NoPositioning);
 
 			m_CurrentDuration = llCurrent * 0.0000001;
-
+			
 			timeElapsed = p;
 			// Set window text 
 			double nCurrent = (p + 5) * 0.0000001;
@@ -179,6 +188,11 @@ void CPlayer::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 			// Set timer again after processing
 			SetTimer(IDT_TIMER_0, 1000, NULL);
 		}
+	}
+	else if(IDC_VOLUME_SLIDER == pScrollBar->GetDlgCtrlID())
+	{
+		int p = m_VolumeSeekBar.GetPos();
+		pAudio->put_Volume(p);
 	}
 
 	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);

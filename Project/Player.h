@@ -41,12 +41,13 @@ public:
 	IMediaControl *pControl;
 	IMediaEvent *pEvent;
 	IMediaSeeking *g_pSeek;
+	IBasicAudio *pAudio;
 
 	LONGLONG m_Duration;
 	float step;
 	HWND hOwner;
 	long timeElapsed;
-	double m_iDuration;
+	LONGLONG m_iDuration;
 	double m_CurrentDuration;
 
 public:
@@ -57,4 +58,5 @@ public:
 
 	State m_PlayState;
 	CButton m_ButtonPlayPause;
+	CSliderCtrl m_VolumeSeekBar;
 };
