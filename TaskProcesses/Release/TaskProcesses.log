@@ -1,0 +1,32 @@
+﻿Build started 11-12-2019 16:46:14.
+     1>Project "C:\Users\91702\Documents\Work\VSCommunity\BoxedAppSDK\Project\TaskProcesses\TaskProcesses.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Release\TaskProcesses.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Release\TaskProcesses.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Release\TaskProcesses.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\TaskProcesses.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt TaskProcesses.cpp TaskProcessesDlg.cpp
+         TaskProcesses.cpp
+         TaskProcessesDlg.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /l"0x0409" /IRelease\ /nologo /fo"Release\TaskProcesses.res" TaskProcesses.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\91702\Documents\Work\VSCommunity\BoxedAppSDK\Project\Release\TaskProcesses.exe" /INCREMENTAL:NO /NOLOGO psapi.lib /MANIFEST /ManifestFile:"Release\TaskProcesses.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\91702\Documents\Work\VSCommunity\BoxedAppSDK\Project\Release\TaskProcesses.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\91702\Documents\Work\VSCommunity\BoxedAppSDK\Project\Release\TaskProcesses.lib" /MACHINE:X86 Release\TaskProcesses.res
+         Release\stdafx.obj
+         Release\TaskProcesses.obj
+         Release\TaskProcessesDlg.obj
+         Generating code
+         Finished generating code
+         TaskProcesses.vcxproj -> C:\Users\91702\Documents\Work\VSCommunity\BoxedAppSDK\Project\Release\TaskProcesses.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\91702\Documents\Work\VSCommunity\BoxedAppSDK\Project\Release\TaskProcesses.exe;#1" /manifest Release\TaskProcesses.exe.intermediate.manifest "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
+       FinalizeBuildStatus:
+         Deleting file "Release\TaskProcesses.unsuccessfulbuild".
+         Touching "Release\TaskProcesses.lastbuildstate".
+     1>Done Building Project "C:\Users\91702\Documents\Work\VSCommunity\BoxedAppSDK\Project\TaskProcesses\TaskProcesses.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.21
